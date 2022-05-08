@@ -13,11 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 
-import datetime
-import time
-import os
 
-import requests
 
 
 # app = FastAPI(docs_url="/documentation", redoc_url=None)
@@ -43,24 +39,22 @@ app.add_middleware(
 )
 
 
-
 # router api
 app.include_router(notify.router)
-# app.include_router(db.router)
+
 
 static_path = "static"
-app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
-# @app.get("/")
-# async def root():
-#     return {"message": "Hello World"}
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
-@app.get("/", response_class=HTMLResponse)
-async def read_item(request: Request):
-    return templates.TemplateResponse("Home.html", {"request": request})
+# @app.get("/", response_class=HTMLResponse)
+# async def read_item(request: Request):
+#     return templates.TemplateResponse("index.html", {"request": request})
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    # Email.SendEmail("mr.sarawutnacwijit@gmail.com","Server BlockShop","Start Server")
+    

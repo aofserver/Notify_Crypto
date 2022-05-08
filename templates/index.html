@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>BitNoti</title>
+    <link rel="icon" href="http://192.168.1.200/bitnoti/BitcoinLogo.svg">
     <link
       href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
       rel="stylesheet"
@@ -14,6 +15,9 @@
       href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 
     <meta
       name="viewport"
@@ -26,10 +30,10 @@
         <v-main style="background-color: rgb(35, 35, 35)">
           <v-stepper v-model="step">
             <v-stepper-items>
-              <v-stepper-content step="1" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
+              <v-stepper-content step="1" class="hidescrollbar" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
                 <v-stepper v-model="stepregister">
                   <v-stepper-items>
-                    <v-stepper-content step="1" style="background-color: rgb(15, 15, 15); width: 100%; height: 100vh; overflow: scroll;">
+                    <v-stepper-content step="1" style="background-color: rgb(15, 15, 15); width: 100%;">
                       <div style="width: 80%; margin: auto;">
                         <h1 style="color: #fff; text-align: center; margin: 10px;">สมัครสมาชิก</h1>
                         <v-text-field label="Name" ref="name" v-model="register.name" maxlength="50" :rules="[value => !!value || 'ใส่ชื่อที่ต้องการ']" solo></v-text-field>
@@ -39,13 +43,13 @@
                         </div>
                       </div>
                     </v-stepper-content>
-                    <v-stepper-content step="2" style="background-color: rgb(15, 15, 15); width: 100%; height: 100vh; overflow: scroll;">
+                    <v-stepper-content step="2" style="background-color: rgb(15, 15, 15); width: 100%;">
                       <v-text-field label="otp" v-model="register.otp" style="padding: 50px;" @input="ValidateOTP()" solo></v-text-field>
                     </v-stepper-content>
                   </v-stepper-items>
                 </v-stepper>
               </v-stepper-content>
-              <v-stepper-content step="2" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
+              <v-stepper-content step="2" class="hidescrollbar" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
                 <v-row
                   justify="center"
                   style="width: 90%; padding-top: 20px; margin: auto"
@@ -83,6 +87,7 @@
                       v-model="select.exchange"
                       @change="SelectExchange()"
                       :disabled="!tokenlinenoti"
+                      hide-details="true"
                     ></v-select>
                   </v-col>
 
@@ -96,6 +101,7 @@
                       v-model="select.typecoin"
                       :disabled="!tokenlinenoti"
                       :readonly="false"
+                      hide-details="true"
                     ></v-autocomplete>
                   </v-col>
 
@@ -110,6 +116,7 @@
                       :disabled="!tokenlinenoti"
                       :disabled="!tokenlinenoti"
                       :readonly="false"
+                      hide-details="true"
                     ></v-autocomplete>
                   </v-col>
 
@@ -119,6 +126,8 @@
                       solo
                       v-model="select.price"
                       :disabled="!tokenlinenoti"
+                      hide-details="true"
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
                     ></v-text-field>
                   </v-col>
 
@@ -138,7 +147,7 @@
                   </v-col>
                 </v-row>
 
-                <div justify="center" style="width: 90%; margin: auto">
+                <div justify="center" style="width: 90%; margin: auto; padding-top: 50px;">
                   <v-data-table
                     :headers="headers"
                     :items="listnotify"
@@ -165,21 +174,23 @@
                       style="
                         width: 90%;
                         margin: 10px auto;
-                        background-color: darkgrey;
+                        background-color: orange;
                       "
                     >
-                      <div style="display: flex; justify-content: center">
-                        <h3 style="margin: 5px">{{deletenoti.exchange}}</h3>
-                        <h3 style="margin: 5px">:</h3>
-                        <h3 style="margin: 5px">{{deletenoti.typecoin}}</h3>
-                      </div>
-                      <div>
-                        <h4 style="margin: 5px; text-align: center">
-                          {{deletenoti.typenotify}}
-                        </h4>
-                        <h4 style="margin: 5px; text-align: center">
-                          ที่ราคา {{deletenoti.price}}
-                        </h4>
+                      <div style="padding: 10px;">
+                        <div style="display: flex; justify-content: center">
+                          <h3 style="margin: 5px">{{deletenoti.exchange}}</h3>
+                          <h3 style="margin: 5px">:</h3>
+                          <h3 style="margin: 5px">{{deletenoti.typecoin}}</h3>
+                        </div>
+                        <div>
+                          <h4 style="margin: 5px; text-align: center">
+                            {{deletenoti.typenotify}}
+                          </h4>
+                          <h4 style="margin: 5px; text-align: center">
+                            ที่ราคา {{deletenoti.price}}
+                          </h4>
+                        </div>
                       </div>
                     </v-card>
 
@@ -218,13 +229,39 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <style>
+      .hidescrollbar {
+        background-color: #eee;
+        width: 200px;
+        height: 100px;
+        border: 1px dotted black;
+        overflow-y: scroll; /* Add the ability to scroll */
+      }
+      
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .hidescrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .hidescrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+
+      * {
+        font-family: 'Kanit', sans-serif;
+      }
+      
+    </style>
     <script>
       new Vue({
         el: "#app",
         delimiters: ["{{", "}}"],
         vuetify: new Vuetify(),
         data: {
-          endpoint: "http://localhost:8000",
+          endpoint: "http://127.0.0.1:8000",
           dialog: { deletenoti: false, logout:false },
           step: 1,
           stepregister: 1,
@@ -368,7 +405,7 @@
               !!this.select.exchange &&
               !!this.select.typecoin &&
               !!this.select.typenotify &&
-              !!this.select.price
+              (!!this.select.price && this.select.price != ".")
             ) {
               this.API_SetNotify(this.select).then((res) => {
                 this.select = {
