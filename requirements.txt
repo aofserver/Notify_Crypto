@@ -1,0 +1,7 @@
+fastapi
+aiofiles
+pydantic
+jinja2
+python-multipart
+web3
+oauth2client

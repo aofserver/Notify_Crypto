@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BitNoti</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <v-main style="background-color: rgb(35, 35, 35)">
+          <v-stepper v-model="step">
+            <v-stepper-items>
+              <v-stepper-content step="1" style="background-color: rgb(35, 35, 35); width: 100%; height: 100%;">
+                <v-stepper v-model="stepregister">
+                  <v-stepper-items>
+                    <v-stepper-content step="1" style="background-color: rgb(15, 15, 15);">
+                      <div style="width: 80%; margin: auto;">
+                        <h1 style="color: #fff; text-align: center; margin: 10px;">สมัครสมาชิก</h1>
+                        <v-text-field label="Name" ref="name" v-model="register.name" maxlength="50" :rules="[value => !!value || 'ใส่ชื่อที่ต้องการ']" solo></v-text-field>
+                        <v-text-field label="Token Line Notify" ref="token" v-model="register.token" maxlength="43" :rules="[value => !!value || 'ใส่ token ที่ต้องการแจ้งเตือน']" solo></v-text-field>
+                        <div style="display: flex; justify-content: center;">
+                          <v-btn style="text-align: center; background-color: green; color: #fff; width: 300px; height: 48px; margin: 10px;" @click="SendOTPLinenotify()">รับ OTP</v-btn>
+                        </div>
+                      </div>
+                    </v-stepper-content>
+                    <v-stepper-content step="2" style="background-color: rgb(15, 15, 15);">
+                      <v-text-field label="otp" v-model="register.otp" style="padding: 50px;" @input="ValidateOTP()" solo></v-text-field>
+                    </v-stepper-content>
+                  </v-stepper-items>
+                </v-stepper>
+              </v-stepper-content>
+              <v-stepper-content step="2" style="background-color: rgb(35, 35, 35); width: 100%; height: 100%;">
+                <v-row
+                  justify="center"
+                  style="width: 90%; padding-top: 20px; margin: auto"
+                >
+                  <v-col cols="12" sm="6" md="3">
+                    <div style="display: flex; justify-content: center;">
+                      <div style="display: flex; justify-content: center;">
+                        <h2 style="color: #fff; margin: 3px;">{{name}}</h2>
+                        <v-btn style="background-color: blue; color: #fff; margin: 3px; border-radius: 50px" @click="dialog.logout = true">Logout</v-btn>
+                      </div>
+                    </div>
+                    <v-dialog v-model="dialog.logout" width="400">
+                      <v-card>
+                        <h5 style="text-align: center; padding: 20px 0 0 0 ;">Token Line Notify</h5>
+                        <h5 style="text-align: center; padding: 0 0 20px 0; color: blue;">{{tokenlinenoti}}</h5>
+                        <div style="display: flex; justify-content: center; padding: 20px">
+                          <v-btn style="background-color: red; color: #fff; margin: 3px; border-radius: 50px;" @click="Logout()">Logout</v-btn>
+                        </div>
+                      </v-card>
+                    </v-dialog>
+                  </v-col>
+                </v-row>
+
+                <v-row
+                  justify="center"
+                  style="width: 90%; padding-top: 5px; margin: auto"
+                >
+                  <v-col cols="12" sm="6" md="2">
+                    <v-select
+                      :items="listexchange"
+                      item-text="name"
+                      item-value="id"
+                      label="Exchange"
+                      solo
+                      v-model="select.exchange"
+                      @change="SelectExchange()"
+                      :disabled="!tokenlinenoti"
+                    ></v-select>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="2">
+                    <v-autocomplete
+                      :items="listtypecoin"
+                      item-text="coin"
+                      item-value="coin"
+                      label="Type Coin"
+                      solo
+                      v-model="select.typecoin"
+                      :disabled="!tokenlinenoti"
+                      :readonly="false"
+                    ></v-autocomplete>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="3">
+                    <v-autocomplete
+                      :items="listtypenotify"
+                      item-text="detail"
+                      item-value="id"
+                      label="Type Notify"
+                      solo
+                      v-model="select.typenotify"
+                      :disabled="!tokenlinenoti"
+                      :disabled="!tokenlinenoti"
+                      :readonly="false"
+                    ></v-autocomplete>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="2">
+                    <v-text-field
+                      label="Price"
+                      solo
+                      v-model="select.price"
+                      :disabled="!tokenlinenoti"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="2" style="text-align: center">
+                    <v-btn
+                      style="
+                        width: 100%;
+                        height: 48px;
+                        background-color: green;
+                        color: #fff;
+                      "
+                      :disabled="!tokenlinenoti"
+                      @click="SubmitNotify()"
+                    >
+                      Notify
+                    </v-btn>
+                  </v-col>
+                </v-row>
+
+                <div justify="center" style="width: 90%; margin: auto">
+                  <v-data-table
+                    :headers="headers"
+                    :items="listnotify"
+                    class="elevation-1"
+                  >
+                    <template v-slot:item.delete="{ item }">
+                      <v-icon
+                        style="color: red"
+                        @click="DialogDeleteNotify(item)"
+                      >
+                        mdi-delete
+                      </v-icon>
+                    </template>
+                  </v-data-table>
+                </div>
+
+                <v-dialog v-model="dialog.deletenoti" width="400">
+                  <v-card>
+                    <h2 style="padding: 20px; color: red; text-align: center">
+                      ต้องการลบการแจ้งเตือน
+                    </h2>
+
+                    <v-card
+                      style="
+                        width: 90%;
+                        margin: 10px auto;
+                        background-color: darkgrey;
+                      "
+                    >
+                      <div style="display: flex; justify-content: center">
+                        <h3 style="margin: 5px">{{deletenoti.exchange}}</h3>
+                        <h3 style="margin: 5px">:</h3>
+                        <h3 style="margin: 5px">{{deletenoti.typecoin}}</h3>
+                      </div>
+                      <div>
+                        <h4 style="margin: 5px; text-align: center">
+                          {{deletenoti.typenotify}}
+                        </h4>
+                        <h4 style="margin: 5px; text-align: center">
+                          ที่ราคา {{deletenoti.price}}
+                        </h4>
+                      </div>
+                    </v-card>
+
+                    <div style="display: flex; justify-content: center">
+                      <v-btn
+                        style="
+                          width: 120px;
+                          padding: 10px;
+                          margin: 20px;
+                          background-color: red;
+                          color: #fff;
+                        "
+                        @click="dialog.deletenoti = false"
+                        >ยกเลิก</v-btn
+                      >
+                      <v-btn
+                        style="
+                          width: 120px;
+                          padding: 10px;
+                          margin: 20px;
+                          background-color: green;
+                          color: #fff;
+                        "
+                        @click="DeleteNotify()"
+                        >ตกลง</v-btn
+                      >
+                    </div>
+                  </v-card>
+                </v-dialog>
+              </v-stepper-content>
+            </v-stepper-items>
+          </v-stepper>
+        </v-main>
+      </v-app>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        delimiters: ["{{", "}}"],
+        vuetify: new Vuetify(),
+        data: {
+          endpoint: "http://localhost:8000",
+          dialog: { deletenoti: false, logout:false },
+          step: 1,
+          stepregister: 1,
+          id: "",
+          name: "",
+          tokenlinenoti: "",
+          listexchange: [],
+          listtypecoin: [],
+          listtypenotify: [],
+          listnotify: [],
+
+          select: {
+            exchange: "",
+            typecoin: "",
+            typenotify: "",
+            price: "",
+          },
+
+          desserts: [
+            {
+              exchange: "OKX",
+              typecoin: "BTC-USDT",
+              typenotify: "xxxxx",
+              price: 37,
+              cntnotify: 4,
+              delete: "",
+            },
+            {
+              exchange: "OKX",
+              typecoin: "BTC-USDT",
+              typenotify: "xxxxx",
+              price: 37,
+              cntnotify: 4,
+              delete: "",
+            },
+          ],
+          headers: [
+            {
+              text: "exchange",
+              align: "center",
+              value: "exchange",
+            },
+            {
+              text: "typecoin",
+              align: "center",
+              value: "typecoin",
+            },
+            {
+              text: "typenotify",
+              align: "center",
+              value: "typenotify",
+            },
+            { text: "price", align: "center", value: "price" },
+            {
+              text: "cnt notify",
+              align: "center",
+              value: "cntnotify",
+            },
+            { text: "ลบ", align: "center", sortable: false, value: "delete" },
+          ],
+
+          deletenoti: {},
+          register:{name:"",token:"",otp_val:"",otp:""},
+      
+          rules: {
+            required: value => !!value || "ใส่ชื่อที่ต้องการ",
+          }
+        },
+        async mounted() {
+          this.name = localStorage.getItem("name");
+          this.tokenlinenoti = localStorage.getItem("tokenlinenoti");
+          if(!!this.tokenlinenoti){
+            this.step = 2
+          }
+
+          this.API_ListExchange().then((data) => {
+            this.listexchange = data;
+          });
+
+          this.API_ListTypeNotify().then((data) => {
+            this.listtypenotify = data;
+          });
+
+          this.API_GetNotify().then((data) => {
+            this.listnotify = data.map((i) => {
+              return {
+                id: i.id,
+                exchange: i.name,
+                typecoin: i.coin,
+                typenotify: i.detail,
+                price: i.price,
+                cntnotify: i.cntnotify,
+                delete: "",
+              };
+            });
+          });
+        },
+        methods: {
+          SendOTPLinenotify(){
+            if(!!this.register.name && !!this.register.token){
+              this.register.otp_val = Math.random().toString(16).substr(2, 4).toUpperCase()
+              var data = {"msg":"\nOTP : "+this.register.otp_val}
+              this.API_SendOTPLineNotify(data).then((data)=>{
+                if(data.status == 200){
+                  this.stepregister = 2
+                }
+                else{
+                  this.register.token = ""
+                  this.$refs.token.focus();
+                }
+              })
+            }
+          },
+          ValidateOTP(){
+            if(this.register.otp_val == this.register.otp){
+              this.API_RegisterNotify({"name":this.register.name}).then((data)=>{
+                if (data.length == 1){
+                  localStorage.setItem("userid", data[0].id);
+                  localStorage.setItem("name", this.register.name);
+                  localStorage.setItem("tokenlinenoti", this.register.token);
+                  window.location.reload();
+                }
+                else{
+                  window.location.reload();
+                }
+                
+              })
+            }
+          },
+          Logout(){
+            localStorage.clear();
+            window.location.reload();
+          },
+          SelectExchange() {
+            this.API_ListTypeCoin().then((data) => {
+              this.listtypecoin = data;
+            });
+          },
+          SubmitNotify() {
+            if (
+              !!this.select.exchange &&
+              !!this.select.typecoin &&
+              !!this.select.typenotify &&
+              !!this.select.price
+            ) {
+              this.API_SetNotify(this.select).then((res) => {
+                this.select = {
+                  exchange: "",
+                  typecoin: "",
+                  typenotify: "",
+                  price: "",
+                };
+
+                this.API_GetNotify().then((data) => {
+                  this.listnotify = data.map((i) => {
+                    return {
+                      id: i.id,
+                      exchange: i.name,
+                      typecoin: i.coin,
+                      typenotify: i.detail,
+                      price: i.price,
+                      cntnotify: i.cntnotify,
+                      delete: "",
+                    };
+                  });
+                });
+              });
+            }
+          },
+          DialogDeleteNotify(item) {
+            this.deletenoti = item;
+            this.dialog.deletenoti = true;
+          },
+          DeleteNotify() {
+            this.API_DeleteNotify({"id":this.deletenoti.id}).then(()=>{
+              this.API_GetNotify().then((data) => {
+                this.dialog.deletenoti = false;
+                this.deletenoti = {};
+                this.listnotify = data.map((i) => {
+                  return {
+                    id: i.id,
+                    exchange: i.name,
+                    typecoin: i.coin,
+                    typenotify: i.detail,
+                    price: i.price,
+                    cntnotify: i.cntnotify,
+                    delete: "",
+                  };
+                });
+              });
+            })
+          },
+          API_ListExchange() {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+              };
+              axios
+                .get(
+                  this.endpoint + "/notify/exchange",
+                  {},
+                  { headers: header }
+                )
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_ListTypeCoin() {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+              };
+              axios
+                .get(
+                  this.endpoint +
+                    "/notify/typecoin?exchange=" +
+                    this.select.exchange,
+                  {},
+                  { headers: header }
+                )
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_ListTypeNotify() {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+              };
+              axios
+                .get(
+                  this.endpoint + "/notify/typenotify",
+                  {},
+                  { headers: header }
+                )
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_GetNotify() {
+            return new Promise((resolve, reject) => {
+              var config = {
+                method: "get",
+                url: this.endpoint + "/notify/getnotify",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
+                  "userid": localStorage.getItem("userid"),
+                },
+                data: JSON.stringify({}),
+              };
+              axios(config)
+                .then(function (response) {
+                  resolve(response.data);
+                })
+                .catch(function (error) {
+                  reject(error);
+                });
+            });
+          },
+          API_SetNotify(data) {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
+                "userid": localStorage.getItem("userid"),
+              };
+              axios.post(this.endpoint + "/notify/setnotify", data, {
+                  headers: header,
+                })
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_DeleteNotify(data) {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
+                "userid": localStorage.getItem("userid"),
+              };
+              axios.post(this.endpoint + "/notify/deletenotify",data, {
+                  headers: header,
+                })
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_SendOTPLineNotify(data){
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + this.register.token,
+              };
+              axios.post(this.endpoint + "/notify/otplinenotify", data, {
+                  headers: header,
+                })
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_RegisterNotify(data){
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + this.register.token,
+                "userid": localStorage.getItem("userid"),
+              };
+              axios.post(this.endpoint + "/notify/registernotify", data, {
+                  headers: header,
+                })
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
