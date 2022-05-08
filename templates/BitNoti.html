@@ -26,10 +26,10 @@
         <v-main style="background-color: rgb(35, 35, 35)">
           <v-stepper v-model="step">
             <v-stepper-items>
-              <v-stepper-content step="1" style="background-color: rgb(35, 35, 35); width: 100%; height: 100%;">
+              <v-stepper-content step="1" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
                 <v-stepper v-model="stepregister">
                   <v-stepper-items>
-                    <v-stepper-content step="1" style="background-color: rgb(15, 15, 15);">
+                    <v-stepper-content step="1" style="background-color: rgb(15, 15, 15); width: 100%; height: 100vh; overflow: scroll;">
                       <div style="width: 80%; margin: auto;">
                         <h1 style="color: #fff; text-align: center; margin: 10px;">สมัครสมาชิก</h1>
                         <v-text-field label="Name" ref="name" v-model="register.name" maxlength="50" :rules="[value => !!value || 'ใส่ชื่อที่ต้องการ']" solo></v-text-field>
@@ -39,13 +39,13 @@
                         </div>
                       </div>
                     </v-stepper-content>
-                    <v-stepper-content step="2" style="background-color: rgb(15, 15, 15);">
+                    <v-stepper-content step="2" style="background-color: rgb(15, 15, 15); width: 100%; height: 100vh; overflow: scroll;">
                       <v-text-field label="otp" v-model="register.otp" style="padding: 50px;" @input="ValidateOTP()" solo></v-text-field>
                     </v-stepper-content>
                   </v-stepper-items>
                 </v-stepper>
               </v-stepper-content>
-              <v-stepper-content step="2" style="background-color: rgb(35, 35, 35); width: 100%; height: 100%;">
+              <v-stepper-content step="2" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
                 <v-row
                   justify="center"
                   style="width: 90%; padding-top: 20px; margin: auto"
