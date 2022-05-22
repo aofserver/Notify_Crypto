@@ -155,15 +155,141 @@
                     class="elevation-1"
                   >
                     <template v-slot:item.delete="{ item }">
+                      <div style="display: flex; justify-content: space-evenly;">
                       <v-icon
-                        style="color: red"
+                        style="color: green; padding: 5px;"
+                        @click="DialogReNotify(item)"
+                      >
+                        mdi-sync
+                      </v-icon>
+                      <v-icon
+                        style="color: blue; padding: 5px;"
+                        @click="DialogEditNotify(item)"
+                      >
+                        mdi-pencil
+                      </v-icon>
+                      <v-icon
+                        style="color: red; padding: 5px;"
                         @click="DialogDeleteNotify(item)"
                       >
                         mdi-delete
                       </v-icon>
+                      </div>
                     </template>
                   </v-data-table>
                 </div>
+
+                <v-dialog v-model="dialog.renoti" width="400">
+                  <v-card>
+                    <h2 style="padding: 20px; color: green; text-align: center">
+                      ต้องการรีเซ็ทการแจ้งเตือน
+                    </h2>
+
+                    <v-card
+                      style="
+                        width: 90%;
+                        margin: 10px auto;
+                        background-color: orange;
+                      "
+                    >
+                      <div style="padding: 10px;">
+                        <div style="display: flex; justify-content: center">
+                          <h3 style="margin: 5px">{{renoti.exchange}}</h3>
+                          <h3 style="margin: 5px">:</h3>
+                          <h3 style="margin: 5px">{{renoti.typecoin}}</h3>
+                        </div>
+                        <div>
+                          <h4 style="margin: 5px; text-align: center">
+                            {{renoti.typenotify}}
+                          </h4>
+                          <h4 style="margin: 5px; text-align: center">
+                            ที่ราคา {{renoti.price}}
+                          </h4>
+                        </div>
+                      </div>
+                    </v-card>
+
+                    <div style="display: flex; justify-content: center">
+                      <v-btn
+                        style="
+                          width: 120px;
+                          padding: 10px;
+                          margin: 20px;
+                          background-color: red;
+                          color: #fff;
+                        "
+                        @click="dialog.editnoti = false"
+                        >ยกเลิก</v-btn
+                      >
+                      <v-btn
+                        style="
+                          width: 120px;
+                          padding: 10px;
+                          margin: 20px;
+                          background-color: green;
+                          color: #fff;
+                        "
+                        @click="ReNotify()"
+                        >รีเซ็ท</v-btn
+                      >
+                    </div>
+                  </v-card>
+                </v-dialog>
+
+                <v-dialog v-model="dialog.editnoti" width="400">
+                  <v-card>
+                    <h2 style="padding: 20px; color: blue; text-align: center">
+                      ต้องการแก้ไขการแจ้งเตือน
+                    </h2>
+
+                    <v-card
+                      style="
+                        width: 90%;
+                        margin: 10px auto;
+                        background-color: orange;
+                      "
+                    >
+                      <div style="padding: 10px;">
+                        <div style="display: flex; justify-content: center">
+                          <h3 style="margin: 5px">{{editnoti.exchange}}</h3>
+                          <h3 style="margin: 5px">:</h3>
+                          <h3 style="margin: 5px">{{editnoti.typecoin}}</h3>
+                        </div>
+                        <div>
+                          <h4 style="margin: 5px; text-align: center">
+                            {{editnoti.typenotify}}
+                          </h4>
+                          <v-text-field v-model="editnoti.price" label="ราคา" style="margin: 5px; text-align: center;" solo></v-text-field>
+                        </div>
+                      </div>
+                    </v-card>
+
+                    <div style="display: flex; justify-content: center">
+                      <v-btn
+                        style="
+                          width: 120px;
+                          padding: 10px;
+                          margin: 20px;
+                          background-color: red;
+                          color: #fff;
+                        "
+                        @click="dialog.editnoti = false"
+                        >ยกเลิก</v-btn
+                      >
+                      <v-btn
+                        style="
+                          width: 120px;
+                          padding: 10px;
+                          margin: 20px;
+                          background-color: green;
+                          color: #fff;
+                        "
+                        @click="EditNotify()"
+                        >แก้ไข</v-btn
+                      >
+                    </div>
+                  </v-card>
+                </v-dialog>
 
                 <v-dialog v-model="dialog.deletenoti" width="400">
                   <v-card>
@@ -263,7 +389,7 @@
         vuetify: new Vuetify(),
         data: {
           endpoint: "http://127.0.0.1:8000",
-          dialog: { deletenoti: false, logout:false },
+          dialog: { renoti: false, editnoti: false ,deletenoti: false, logout:false },
           step: 1,
           stepregister: 1,
           id: "",
@@ -321,9 +447,11 @@
               align: "center",
               value: "cntnotify",
             },
-            { text: "ลบ", align: "center", sortable: false, value: "delete" },
+            { text: "แก้ไข", align: "center", sortable: false, value: "delete" },
           ],
 
+          renoti: {},
+          editnoti: {},
           deletenoti: {},
           register:{name:"",token:"",otp_val:"",otp:""},
       
@@ -432,9 +560,55 @@
               });
             }
           },
+          DialogReNotify(item) {
+            this.renoti = item;
+            this.dialog.renoti = true;
+          },
+          DialogEditNotify(item) {
+            this.editnoti = item;
+            this.dialog.editnoti = true;
+          },
           DialogDeleteNotify(item) {
             this.deletenoti = item;
             this.dialog.deletenoti = true;
+          },
+          ReNotify() {
+            this.API_ReNotify({"id":this.renoti.id}).then(()=>{
+              this.API_GetNotify().then((data) => {
+                this.dialog.renoti = false;
+                this.renoti = {};
+                this.listnotify = data.map((i) => {
+                  return {
+                    id: i.id,
+                    exchange: i.name,
+                    typecoin: i.coin,
+                    typenotify: i.detail,
+                    price: i.price,
+                    cntnotify: i.cntnotify,
+                    delete: "",
+                  };
+                });
+              });
+            })
+          },
+          EditNotify() {
+            this.API_EditNotify({"id":this.editnoti.id,"price":this.editnoti.price}).then(()=>{
+              this.API_GetNotify().then((data) => {
+                this.dialog.editnoti = false;
+                this.editnoti = {};
+                this.listnotify = data.map((i) => {
+                  return {
+                    id: i.id,
+                    exchange: i.name,
+                    typecoin: i.coin,
+                    typenotify: i.detail,
+                    price: i.price,
+                    cntnotify: i.cntnotify,
+                    delete: "",
+                  };
+                });
+              });
+            })
           },
           DeleteNotify() {
             this.API_DeleteNotify({"id":this.deletenoti.id}).then(()=>{
@@ -543,6 +717,42 @@
                 "userid": localStorage.getItem("userid"),
               };
               axios.post(this.endpoint + "/notify/setnotify", data, {
+                  headers: header,
+                })
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_ReNotify(data) {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
+                "userid": localStorage.getItem("userid"),
+              };
+              axios.post(this.endpoint + "/notify/renotify",data, {
+                  headers: header,
+                })
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_EditNotify(data) {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
+                "userid": localStorage.getItem("userid"),
+              };
+              axios.post(this.endpoint + "/notify/editnotify",data, {
                   headers: header,
                 })
                 .then(function (res) {

@@ -88,6 +88,34 @@ async def SetNotify(setnotify:setnotify,request: Request):
         return reply
     return { 'status':False }
 
+class renotify(BaseModel):
+    id: int
+@router.post("/renotify")
+async def ReNotify(renotify:renotify,request: Request):
+    data = renotify.dict()
+    tokenlinenoti = request.headers.get('Authorization').split(" ")[-1]
+    userid = request.headers.get('userid')
+    if ValidateUser(userid,tokenlinenoti):
+        cmd = "UPDATE notify SET cntnotify='0',status='0' WHERE id={id}".format(id=data['id'])
+        res = SQL.RUN(cmd)
+        reply = { 'status':res }
+        return reply
+    return { 'status':False }
+
+class editnotify(BaseModel):
+    id: int
+    price: int
+@router.post("/editnotify")
+async def EditNotify(editnotify:editnotify,request: Request):
+    data = editnotify.dict()
+    tokenlinenoti = request.headers.get('Authorization').split(" ")[-1]
+    userid = request.headers.get('userid')
+    if ValidateUser(userid,tokenlinenoti):
+        cmd = "UPDATE notify SET price='{price}',cntnotify='0',status='0' WHERE id={id}".format(price=data['price'],id=data['id'])
+        res = SQL.RUN(cmd)
+        reply = { 'status':res }
+        return reply
+    return { 'status':False }
 
 class deletenotify(BaseModel):
     id: int
