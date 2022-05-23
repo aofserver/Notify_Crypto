@@ -218,7 +218,7 @@
                           background-color: red;
                           color: #fff;
                         "
-                        @click="dialog.editnoti = false"
+                        @click="dialog.renoti = false"
                         >ยกเลิก</v-btn
                       >
                       <v-btn
@@ -388,7 +388,7 @@
         delimiters: ["{{", "}}"],
         vuetify: new Vuetify(),
         data: {
-          endpoint: "http://127.0.0.1:8000",
+          endpoint: "http://192.168.1.200:8000",
           dialog: { renoti: false, editnoti: false ,deletenoti: false, logout:false },
           step: 1,
           stepregister: 1,

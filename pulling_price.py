@@ -1,6 +1,7 @@
 import time
 import datetime
 import requests
+import dateutil.parser
 from Database import SQL
 
 list_token = {}
@@ -104,13 +105,14 @@ def ConditionNotify():
     print("============================")
     for i in notify:
         print(i['exchange'],i['coin'],i['typenotify'],i['price'],i['cntnotify'])
+        print(list_token[i['exchange']][i['coin']])
         try:
             after_price = float(list_token[i['exchange']][i['coin']][-2])
         except:
             after_price = float(list_token[i['exchange']][i['coin']][-1])
         current_price = float(list_token[i['exchange']][i['coin']][-1])
         set_price = float(i['price'])
-        difftime = (datetime.datetime.now() - datetime.datetime.fromisoformat(str(i['update_timestamp']))).seconds
+        difftime = (datetime.datetime.now() - dateutil.parser.isoparse(str(i['update_timestamp']))).seconds
         
         if current_price >= set_price and i['typenotify'] == 1 and not(i['status']) and i['cntnotify'] == 0:
             i['cntnotify'] += 1
@@ -160,19 +162,23 @@ def ConditionNotify():
             cmd = "UPDATE notify SET status='{status}' WHERE id={id}".format(status=i['status'],id=i['id'])
             res = SQL.RUN(cmd)
 
+        # print("< c",after_price >= set_price , current_price <= set_price , after_price != current_price , i['typenotify'] == 5 , not(i['status']) , difftime)
+        # print("> c",after_price <= set_price , current_price >= set_price , after_price != current_price , i['typenotify'] == 5 , not(i['status']) , difftime)
         if after_price >= set_price and current_price <= set_price and after_price != current_price and i['typenotify'] == 5 and not(i['status']) and difftime >= 30:
             i['cntnotify'] += 1
             i['status'] = int(not(i['status']))
-            cmd = "UPDATE notify SET cntnotify='{cntnotify},status='{status}' WHERE id={id}".format(cntnotify=i['cntnotify'],status=i['status'],id=i['id'])
+            cmd = "UPDATE notify SET cntnotify='{cntnotify}',status='{status}' WHERE id={id}".format(cntnotify=i['cntnotify'],status=i['status'],id=i['id'])
             res = SQL.RUN(cmd)
+            print(res)
             if res:
                 msg = "\n{exchange} : {coin} ↘ ราคาต่ำกว่า {set_price}\nราคาปัจจุบัน {current_price}".format(exchange=i['exchange'],coin=i['coin'],set_price=str(set_price),current_price=str(current_price))
                 LineNotify(msg,i['token'])
         elif after_price <= set_price and current_price >= set_price and after_price != current_price and i['typenotify'] == 5 and not(i['status']) and difftime >= 30:
             i['cntnotify'] += 1
             i['status'] = int(not(i['status']))
-            cmd = "UPDATE notify SET cntnotify='{cntnotify},status='{status}' WHERE id={id}".format(cntnotify=i['cntnotify'],status=i['status'],id=i['id'])
+            cmd = "UPDATE notify SET cntnotify='{cntnotify}',status='{status}' WHERE id={id}".format(cntnotify=i['cntnotify'],status=i['status'],id=i['id'])
             res = SQL.RUN(cmd)
+            print(res)
             if res:
                 msg = "\n{exchange} : {coin} ↗ ราคาสูงกว่า {set_price}\nราคาปัจจุบัน {current_price}".format(exchange=i['exchange'],coin=i['coin'],set_price=str(set_price),current_price=str(current_price))
                 LineNotify(msg,i['token'])
