@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>BitNoti</title>
-    <link rel="icon" href="http://192.168.1.200/bitnoti/BitcoinLogo.svg">
+    <link rel="icon" href="http://192.168.1.200/bitnoti/BitcoinLogo.svg" />
     <link
       href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
       rel="stylesheet"
@@ -15,9 +15,12 @@
       href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
       rel="stylesheet"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit&display=swap"
+      rel="stylesheet"
+    />
 
     <meta
       name="viewport"
@@ -30,154 +33,320 @@
         <v-main style="background-color: rgb(35, 35, 35)">
           <v-stepper v-model="step">
             <v-stepper-items>
-              <v-stepper-content step="1" class="hidescrollbar" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
+              <v-stepper-content
+                step="1"
+                class="hidescrollbar"
+                style="
+                  background-color: rgb(35, 35, 35);
+                  width: 100%;
+                  height: 100vh;
+                  overflow: scroll;
+                "
+              >
                 <v-stepper v-model="stepregister">
                   <v-stepper-items>
-                    <v-stepper-content step="1" style="background-color: rgb(15, 15, 15); width: 100%;">
-                      <div style="width: 80%; margin: auto;">
-                        <h1 style="color: #fff; text-align: center; margin: 10px;">สมัครสมาชิก</h1>
-                        <v-text-field label="Name" ref="name" v-model="register.name" maxlength="50" :rules="[value => !!value || 'ใส่ชื่อที่ต้องการ']" solo></v-text-field>
-                        <v-text-field label="Token Line Notify" ref="token" v-model="register.token" maxlength="43" :rules="[value => !!value || 'ใส่ token ที่ต้องการแจ้งเตือน']" solo></v-text-field>
-                        <div style="display: flex; justify-content: center;">
-                          <v-btn style="text-align: center; background-color: green; color: #fff; width: 300px; height: 48px; margin: 10px;" @click="SendOTPLinenotify()">รับ OTP</v-btn>
+                    <v-stepper-content
+                      step="1"
+                      style="background-color: rgb(15, 15, 15); width: 100%"
+                    >
+                      <div style="width: 80%; margin: auto">
+                        <h1
+                          style="color: #fff; text-align: center; margin: 10px"
+                        >
+                          สมัครสมาชิก
+                        </h1>
+                        <v-text-field
+                          label="Name"
+                          ref="name"
+                          v-model="register.name"
+                          maxlength="50"
+                          :rules="[value => !!value || 'ใส่ชื่อที่ต้องการ']"
+                          solo
+                        ></v-text-field>
+                        <v-text-field
+                          label="Token Line Notify"
+                          ref="token"
+                          v-model="register.token"
+                          maxlength="43"
+                          :rules="[value => !!value || 'ใส่ token ที่ต้องการแจ้งเตือน']"
+                          solo
+                        ></v-text-field>
+                        <div style="display: flex; justify-content: center">
+                          <v-btn
+                            style="
+                              text-align: center;
+                              background-color: green;
+                              color: #fff;
+                              width: 300px;
+                              height: 48px;
+                              margin: 10px;
+                            "
+                            @click="SendOTPLinenotify()"
+                            >รับ OTP</v-btn
+                          >
                         </div>
                       </div>
                     </v-stepper-content>
-                    <v-stepper-content step="2" style="background-color: rgb(15, 15, 15); width: 100%;">
-                      <v-text-field label="otp" v-model="register.otp" style="padding: 50px;" @input="ValidateOTP()" solo></v-text-field>
+                    <v-stepper-content
+                      step="2"
+                      style="background-color: rgb(15, 15, 15); width: 100%"
+                    >
+                      <v-text-field
+                        label="otp"
+                        v-model="register.otp"
+                        style="padding: 50px"
+                        @input="ValidateOTP()"
+                        solo
+                      ></v-text-field>
                     </v-stepper-content>
                   </v-stepper-items>
                 </v-stepper>
               </v-stepper-content>
-              <v-stepper-content step="2" class="hidescrollbar" style="background-color: rgb(35, 35, 35); width: 100%; height: 100vh; overflow: scroll;">
+              <v-stepper-content
+                step="2"
+                class="hidescrollbar"
+                style="
+                  background-color: rgb(35, 35, 35);
+                  width: 100%;
+                  height: 100vh;
+                  overflow: scroll;
+                "
+              >
                 <v-row
                   justify="center"
                   style="width: 90%; padding-top: 20px; margin: auto"
                 >
                   <v-col cols="12" sm="6" md="3">
-                    <div style="display: flex; justify-content: center;">
-                      <div style="display: flex; justify-content: center;">
-                        <h2 style="color: #fff; margin: 3px;">{{name}}</h2>
-                        <v-btn style="background-color: blue; color: #fff; margin: 3px; border-radius: 50px" @click="dialog.logout = true">Logout</v-btn>
+                    <div style="display: flex; justify-content: center">
+                      <div style="display: flex; justify-content: center">
+                        <h2 style="color: #fff; margin: 3px">{{name}}</h2>
+                        <v-btn
+                          style="
+                            background-color: blue;
+                            color: #fff;
+                            margin: 3px;
+                            border-radius: 50px;
+                          "
+                          @click="dialog.logout = true"
+                          >Logout</v-btn
+                        >
                       </div>
                     </div>
                     <v-dialog v-model="dialog.logout" width="400">
                       <v-card>
-                        <h5 style="text-align: center; padding: 20px 0 0 0 ;">Token Line Notify</h5>
-                        <h5 style="text-align: center; padding: 0 0 20px 0; color: blue;">{{tokenlinenoti}}</h5>
-                        <div style="display: flex; justify-content: center; padding: 20px">
-                          <v-btn style="background-color: red; color: #fff; margin: 3px; border-radius: 50px;" @click="Logout()">Logout</v-btn>
+                        <h5 style="text-align: center; padding: 20px 0 0 0">
+                          Token Line Notify
+                        </h5>
+                        <h5
+                          style="
+                            text-align: center;
+                            padding: 0 0 20px 0;
+                            color: blue;
+                          "
+                        >
+                          {{tokenlinenoti}}
+                        </h5>
+                        <div
+                          style="
+                            display: flex;
+                            justify-content: center;
+                            padding: 20px;
+                          "
+                        >
+                          <v-btn
+                            style="
+                              background-color: red;
+                              color: #fff;
+                              margin: 3px;
+                              border-radius: 50px;
+                            "
+                            @click="Logout()"
+                            >Logout</v-btn
+                          >
                         </div>
                       </v-card>
                     </v-dialog>
                   </v-col>
                 </v-row>
 
-                <v-row
-                  justify="center"
-                  style="width: 90%; padding-top: 5px; margin: auto"
-                >
-                  <v-col cols="12" sm="6" md="2">
-                    <v-select
-                      :items="listexchange"
-                      item-text="name"
-                      item-value="id"
-                      label="Exchange"
-                      solo
-                      v-model="select.exchange"
-                      @change="SelectExchange()"
-                      :disabled="!tokenlinenoti"
-                      hide-details="true"
-                    ></v-select>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="2">
-                    <v-autocomplete
-                      :items="listtypecoin"
-                      item-text="coin"
-                      item-value="coin"
-                      label="Type Coin"
-                      solo
-                      v-model="select.typecoin"
-                      :disabled="!tokenlinenoti"
-                      :readonly="false"
-                      no-data-text="เลือก Exchange ที่ใช้งานก่อน"
-                      hide-details="true"
-                    ></v-autocomplete>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="3">
-                    <v-autocomplete
-                      :items="listtypenotify"
-                      item-text="detail"
-                      item-value="id"
-                      label="Type Notify"
-                      solo
-                      v-model="select.typenotify"
-                      :disabled="!tokenlinenoti"
-                      :disabled="!tokenlinenoti"
-                      :readonly="false"
-                      hide-details="true"
-                    ></v-autocomplete>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="2">
-                    <v-text-field
-                      label="Price"
-                      solo
-                      v-model="select.price"
-                      :disabled="!tokenlinenoti"
-                      hide-details="true"
-                      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="2" style="text-align: center">
-                    <v-btn
-                      style="
-                        width: 100%;
-                        height: 48px;
-                        background-color: green;
-                        color: #fff;
-                      "
-                      :disabled="!tokenlinenoti"
-                      @click="SubmitNotify()"
-                    >
-                      Notify
-                    </v-btn>
-                  </v-col>
-                </v-row>
-
-                <div justify="center" style="width: 90%; margin: auto; padding-top: 50px;">
-                  <v-data-table
-                    :headers="headers"
-                    :items="listnotify"
-                    class="elevation-1"
+                <v-tabs fixed-tabs background-color="indigo" dark v-model="tab">
+                  <v-tab
+                    v-for="item in tabitems"
+                    :key="item"
+                    :href="`#${item}`"
                   >
-                    <template v-slot:item.delete="{ item }">
-                      <div style="display: flex; justify-content: space-evenly;">
-                      <v-icon
-                        style="color: green; padding: 5px;"
-                        @click="DialogReNotify(item)"
+                    {{ item }}
+                  </v-tab>
+                </v-tabs>
+
+                <v-tabs-items v-model="tab">
+                  <v-tab-item
+                    value="Notify"
+                    :href="`#Notify`"
+                    style="background-color: rgb(59, 59, 59)"
+                  >
+                    <v-row
+                      justify="center"
+                      style="width: 90%; padding-top: 5px; margin: auto"
+                    >
+                      <v-col cols="12" sm="6" md="2">
+                        <v-select
+                          :items="listexchange"
+                          item-text="name"
+                          item-value="id"
+                          label="Exchange"
+                          solo
+                          v-model="select.exchange"
+                          @change="SelectExchange()"
+                          :disabled="!tokenlinenoti"
+                          hide-details="true"
+                        ></v-select>
+                      </v-col>
+
+                      <v-col cols="12" sm="6" md="2">
+                        <v-autocomplete
+                          :items="listtypecoin"
+                          item-text="coin"
+                          item-value="coin"
+                          label="Type Coin"
+                          solo
+                          v-model="select.typecoin"
+                          :disabled="!tokenlinenoti"
+                          :readonly="false"
+                          no-data-text="เลือก Exchange ที่ใช้งานก่อน"
+                          hide-details="true"
+                        ></v-autocomplete>
+                      </v-col>
+
+                      <v-col cols="12" sm="6" md="3">
+                        <v-autocomplete
+                          :items="listtypenotify"
+                          item-text="detail"
+                          item-value="id"
+                          label="Type Notify"
+                          solo
+                          v-model="select.typenotify"
+                          :disabled="!tokenlinenoti"
+                          :disabled="!tokenlinenoti"
+                          :readonly="false"
+                          hide-details="true"
+                        ></v-autocomplete>
+                      </v-col>
+
+                      <v-col cols="12" sm="6" md="2">
+                        <v-text-field
+                          label="Price"
+                          solo
+                          v-model="select.price"
+                          :disabled="!tokenlinenoti"
+                          hide-details="true"
+                          oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="12" sm="6" md="2" style="text-align: center">
+                        <v-btn
+                          style="
+                            width: 100%;
+                            height: 48px;
+                            background-color: green;
+                            color: #fff;
+                          "
+                          :disabled="!tokenlinenoti"
+                          @click="SubmitNotify()"
+                        >
+                          Notify
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+
+                    <div
+                      justify="center"
+                      style="width: 90%; margin: auto; padding-top: 50px; margin-bottom: 10px;"
+                    >
+                      <v-data-table
+                        :headers="headers"
+                        :items="listnotify"
+                        class="elevation-1"
                       >
-                        mdi-sync
-                      </v-icon>
-                      <v-icon
-                        style="color: blue; padding: 5px;"
-                        @click="DialogEditNotify(item)"
+                        <template v-slot:item.delete="{ item }">
+                          <div
+                            style="display: flex; justify-content: space-evenly"
+                          >
+                            <v-icon
+                              style="color: green; padding: 5px"
+                              @click="DialogReNotify(item)"
+                            >
+                              mdi-sync
+                            </v-icon>
+                            <v-icon
+                              style="color: blue; padding: 5px"
+                              @click="DialogEditNotify(item)"
+                            >
+                              mdi-pencil
+                            </v-icon>
+                            <v-icon
+                              style="color: red; padding: 5px"
+                              @click="DialogDeleteNotify(item)"
+                            >
+                              mdi-delete
+                            </v-icon>
+                          </div>
+                        </template>
+                      </v-data-table>
+                    </div>
+                  </v-tab-item>
+                  <v-tab-item
+                    value="Analysis"
+                    :href="`#Analysis`"
+                    style="background-color: rgb(59, 59, 59)"
+                  >
+                    <div style="width: 90%; margin: 10px auto">
+                      <v-autocomplete
+                        v-model="selectanaly.typecoin"
+                        :items="coinanaly"
+                        item-text="symbol"
+                        item-value="id"
+                        dense
+                        chips
+                        small-chips
+                        label="Symbol Coin"
+                        multiple
+                        solo
+                        hide-details="true"
+                        no-data-text="ไม่มีข้อมูล"
+                        style="width: 100%; height: 48px"
+                      ></v-autocomplete>
+                      <v-text-field
+                        label="Name Coin"
+                        v-model="selectanaly.typecoin"
+                        style="margin-bottom: 10px;"
+                        readonly
+                        solo
+                        hide-details="true"
+                      ></v-text-field>
+                      <v-btn
+                        style="
+                          width: 100%;
+                          height: 48px;
+                          background-color: green;
+                          color: #fff;
+                          margin-bottom: 30px;
+                        "
+                        @click="GetInfoAnalysis()"
                       >
-                        mdi-pencil
-                      </v-icon>
-                      <v-icon
-                        style="color: red; padding: 5px;"
-                        @click="DialogDeleteNotify(item)"
-                      >
-                        mdi-delete
-                      </v-icon>
-                      </div>
-                    </template>
-                  </v-data-table>
-                </div>
+                        ADD
+                      </v-btn>
+                      <v-data-table
+                        :headers="headers_analysis"
+                        :items="listinfo"
+                        class="elevation-1"
+                      ></v-data-table>
+                    </div>
+
+                    
+                  </v-tab-item>
+                </v-tabs-items>
 
                 <v-dialog v-model="dialog.renoti" width="400">
                   <v-card>
@@ -192,7 +361,7 @@
                         background-color: orange;
                       "
                     >
-                      <div style="padding: 10px;">
+                      <div style="padding: 10px">
                         <div style="display: flex; justify-content: center">
                           <h3 style="margin: 5px">{{renoti.exchange}}</h3>
                           <h3 style="margin: 5px">:</h3>
@@ -249,7 +418,7 @@
                         background-color: orange;
                       "
                     >
-                      <div style="padding: 10px;">
+                      <div style="padding: 10px">
                         <div style="display: flex; justify-content: center">
                           <h3 style="margin: 5px">{{editnoti.exchange}}</h3>
                           <h3 style="margin: 5px">:</h3>
@@ -259,7 +428,12 @@
                           <h4 style="margin: 5px; text-align: center">
                             {{editnoti.typenotify}}
                           </h4>
-                          <v-text-field v-model="editnoti.price" label="ราคา" style="margin: 5px; text-align: center;" solo></v-text-field>
+                          <v-text-field
+                            v-model="editnoti.price"
+                            label="ราคา"
+                            style="margin: 5px; text-align: center"
+                            solo
+                          ></v-text-field>
                         </div>
                       </div>
                     </v-card>
@@ -304,7 +478,7 @@
                         background-color: orange;
                       "
                     >
-                      <div style="padding: 10px;">
+                      <div style="padding: 10px">
                         <div style="display: flex; justify-content: center">
                           <h3 style="margin: 5px">{{deletenoti.exchange}}</h3>
                           <h3 style="margin: 5px">:</h3>
@@ -356,7 +530,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    
+
     <style>
       .hidescrollbar {
         background-color: #eee;
@@ -365,22 +539,21 @@
         border: 1px dotted black;
         overflow-y: scroll; /* Add the ability to scroll */
       }
-      
+
       /* Hide scrollbar for Chrome, Safari and Opera */
       .hidescrollbar::-webkit-scrollbar {
-          display: none;
+        display: none;
       }
-      
+
       /* Hide scrollbar for IE, Edge and Firefox */
       .hidescrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
       }
 
       * {
-        font-family: 'Kanit', sans-serif;
+        font-family: "Kanit", sans-serif;
       }
-      
     </style>
     <script>
       new Vue({
@@ -388,8 +561,14 @@
         delimiters: ["{{", "}}"],
         vuetify: new Vuetify(),
         data: {
-          endpoint: "http://192.168.1.200:8000",
-          dialog: { renoti: false, editnoti: false ,deletenoti: false, logout:false },
+          // endpoint: "http://192.168.1.200:8000",
+          endpoint: "http://localhost:8000",
+          dialog: {
+            renoti: false,
+            editnoti: false,
+            deletenoti: false,
+            logout: false,
+          },
           step: 1,
           stepregister: 1,
           id: "",
@@ -399,6 +578,7 @@
           listtypecoin: [],
           listtypenotify: [],
           listnotify: [],
+          listinfo: [],
 
           select: {
             exchange: "",
@@ -406,65 +586,97 @@
             typenotify: "",
             price: "",
           },
-
-          desserts: [
-            {
-              exchange: "OKX",
-              typecoin: "BTC-USDT",
-              typenotify: "xxxxx",
-              price: 37,
-              cntnotify: 4,
-              delete: "",
-            },
-            {
-              exchange: "OKX",
-              typecoin: "BTC-USDT",
-              typenotify: "xxxxx",
-              price: 37,
-              cntnotify: 4,
-              delete: "",
-            },
-          ],
           headers: [
             {
-              text: "exchange",
+              text: "Exchange",
               align: "center",
               value: "exchange",
             },
             {
-              text: "typecoin",
+              text: "Type Coin",
               align: "center",
               value: "typecoin",
             },
             {
-              text: "typenotify",
+              text: "Type Notify",
               align: "center",
               value: "typenotify",
             },
-            { text: "price", align: "center", value: "price" },
+            { text: "Price($)", align: "center", value: "price" },
             {
-              text: "cnt notify",
+              text: "Count Notify",
               align: "center",
               value: "cntnotify",
             },
-            { text: "แก้ไข", align: "center", sortable: false, value: "delete" },
+            {
+              text: "Edit",
+              align: "center",
+              sortable: false,
+              value: "delete",
+            },
+          ],
+          headers_analysis: [
+            {
+              text: "Symbol",
+              align: "center",
+              value: "symbol",
+            },
+            {
+              text: "Name Coin",
+              align: "center",
+              value: "coin",
+            },
+            {
+              text: "Price",
+              align: "center",
+              value: "price",
+            },
+            {
+              text: "ATH Change(%)",
+              align: "center",
+              value: "ath_change",
+            },
+            {
+              text: "Marketcap($)",
+              align: "center",
+              value: "market_cap",
+            },
           ],
 
           renoti: {},
           editnoti: {},
           deletenoti: {},
-          register:{name:"",token:"",otp_val:"",otp:""},
-      
+          register: { name: "", token: "", otp_val: "", otp: "" },
+
           rules: {
-            required: value => !!value || "ใส่ชื่อที่ต้องการ",
-          }
+            required: (value) => !!value || "ใส่ชื่อที่ต้องการ",
+          },
+          tabitems: ["Notify", "Analysis"],
+          tab: "Notify",
+          coinanaly: [],
+          selectanaly: {
+            typecoin: "",
+          },
         },
         async mounted() {
           this.name = localStorage.getItem("name");
           this.tokenlinenoti = localStorage.getItem("tokenlinenoti");
-          if(!!this.tokenlinenoti){
-            this.step = 2
+          if (!!this.tokenlinenoti) {
+            this.step = 2;
           }
+
+          this.API_ListCoinAnalysis().then((data) => {
+            this.coinanaly = data.map((i) => {
+              if (
+                !i.id.includes("-") &&
+                i.symbol.length <= 5 &&
+                !i.name.includes("-") &&
+                !i.name.includes(" ")
+              ) {
+                return i;
+              }
+            });
+          });
 
           this.API_ListExchange().then((data) => {
             this.listexchange = data;
@@ -489,38 +701,40 @@
           });
         },
         methods: {
-          SendOTPLinenotify(){
-            if(!!this.register.name && !!this.register.token){
-              this.register.otp_val = Math.random().toString(16).substr(2, 4).toUpperCase()
-              var data = {"msg":"\nOTP : "+this.register.otp_val}
-              this.API_SendOTPLineNotify(data).then((data)=>{
-                if(data.status == 200){
-                  this.stepregister = 2
-                }
-                else{
-                  this.register.token = ""
+          SendOTPLinenotify() {
+            if (!!this.register.name && !!this.register.token) {
+              this.register.otp_val = Math.random()
+                .toString(16)
+                .substr(2, 4)
+                .toUpperCase();
+              var data = { msg: "\nOTP : " + this.register.otp_val };
+              this.API_SendOTPLineNotify(data).then((data) => {
+                if (data.status == 200) {
+                  this.stepregister = 2;
+                } else {
+                  this.register.token = "";
                   this.$refs.token.focus();
                 }
-              })
+              });
             }
           },
-          ValidateOTP(){
-            if(this.register.otp_val == this.register.otp){
-              this.API_RegisterNotify({"name":this.register.name}).then((data)=>{
-                if (data.length == 1){
-                  localStorage.setItem("userid", data[0].id);
-                  localStorage.setItem("name", this.register.name);
-                  localStorage.setItem("tokenlinenoti", this.register.token);
-                  window.location.reload();
+          ValidateOTP() {
+            if (this.register.otp_val == this.register.otp) {
+              this.API_RegisterNotify({ name: this.register.name }).then(
+                (data) => {
+                  if (data.length == 1) {
+                    localStorage.setItem("userid", data[0].id);
+                    localStorage.setItem("name", this.register.name);
+                    localStorage.setItem("tokenlinenoti", this.register.token);
+                    window.location.reload();
+                  } else {
+                    window.location.reload();
+                  }
                 }
-                else{
-                  window.location.reload();
-                }
-                
-              })
+              );
             }
           },
-          Logout(){
+          Logout() {
             localStorage.clear();
             window.location.reload();
           },
@@ -534,7 +748,8 @@
               !!this.select.exchange &&
               !!this.select.typecoin &&
               !!this.select.typenotify &&
-              (!!this.select.price && this.select.price != ".")
+              !!this.select.price &&
+              this.select.price != "."
             ) {
               this.API_SetNotify(this.select).then((res) => {
                 this.select = {
@@ -573,7 +788,7 @@
             this.dialog.deletenoti = true;
           },
           ReNotify() {
-            this.API_ReNotify({"id":this.renoti.id}).then(()=>{
+            this.API_ReNotify({ id: this.renoti.id }).then(() => {
               this.API_GetNotify().then((data) => {
                 this.dialog.renoti = false;
                 this.renoti = {};
@@ -589,10 +804,13 @@
                   };
                 });
               });
-            })
+            });
           },
           EditNotify() {
-            this.API_EditNotify({"id":this.editnoti.id,"price":this.editnoti.price}).then(()=>{
+            this.API_EditNotify({
+              id: this.editnoti.id,
+              price: this.editnoti.price,
+            }).then(() => {
               this.API_GetNotify().then((data) => {
                 this.dialog.editnoti = false;
                 this.editnoti = {};
@@ -608,10 +826,10 @@
                   };
                 });
               });
-            })
+            });
           },
           DeleteNotify() {
-            this.API_DeleteNotify({"id":this.deletenoti.id}).then(()=>{
+            this.API_DeleteNotify({ id: this.deletenoti.id }).then(() => {
               this.API_GetNotify().then((data) => {
                 this.dialog.deletenoti = false;
                 this.deletenoti = {};
@@ -627,7 +845,17 @@
                   };
                 });
               });
-            })
+            });
+          },
+          GetInfoAnalysis() {
+            this.API_InfoCoinAnalysis(this.selectanaly.typecoin).then(
+              (data) => {
+                this.selectanaly.typecoin = "";
+                data.map((i) => {
+                  this.listinfo.push(i);
+                });
+              }
+            );
           },
           API_ListExchange() {
             return new Promise((resolve, reject) => {
@@ -669,6 +897,45 @@
                 });
             });
           },
+          API_ListCoinAnalysis() {
+            return new Promise((resolve, reject) => {
+              const header = {
+                "Content-Type": "application/json",
+              };
+              axios
+                .get(
+                  this.endpoint + "/analysis/listcoin",
+                  {},
+                  { headers: header }
+                )
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
+          API_InfoCoinAnalysis(data) {
+            return new Promise((resolve, reject) => {
+              var config = {
+                method: "post",
+                url: "http://localhost:8000/analysis/info",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                data: JSON.stringify({ listidx: data }),
+              };
+
+              axios(config)
+                .then(function (res) {
+                  resolve(res.data);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            });
+          },
           API_ListTypeNotify() {
             return new Promise((resolve, reject) => {
               const header = {
@@ -695,8 +962,9 @@
                 url: this.endpoint + "/notify/getnotify",
                 headers: {
                   "Content-Type": "application/json",
-                  "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
-                  "userid": localStorage.getItem("userid"),
+                  Authorization:
+                    "Bearer " + localStorage.getItem("tokenlinenoti"),
+                  userid: localStorage.getItem("userid"),
                 },
                 data: JSON.stringify({}),
               };
@@ -713,10 +981,12 @@
             return new Promise((resolve, reject) => {
               const header = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
-                "userid": localStorage.getItem("userid"),
+                Authorization:
+                  "Bearer " + localStorage.getItem("tokenlinenoti"),
+                userid: localStorage.getItem("userid"),
               };
-              axios.post(this.endpoint + "/notify/setnotify", data, {
+              axios
+                .post(this.endpoint + "/notify/setnotify", data, {
                   headers: header,
                 })
                 .then(function (res) {
@@ -731,10 +1001,12 @@
             return new Promise((resolve, reject) => {
               const header = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
-                "userid": localStorage.getItem("userid"),
+                Authorization:
+                  "Bearer " + localStorage.getItem("tokenlinenoti"),
+                userid: localStorage.getItem("userid"),
               };
-              axios.post(this.endpoint + "/notify/renotify",data, {
+              axios
+                .post(this.endpoint + "/notify/renotify", data, {
                   headers: header,
                 })
                 .then(function (res) {
@@ -749,10 +1021,12 @@
             return new Promise((resolve, reject) => {
               const header = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
-                "userid": localStorage.getItem("userid"),
+                Authorization:
+                  "Bearer " + localStorage.getItem("tokenlinenoti"),
+                userid: localStorage.getItem("userid"),
               };
-              axios.post(this.endpoint + "/notify/editnotify",data, {
+              axios
+                .post(this.endpoint + "/notify/editnotify", data, {
                   headers: header,
                 })
                 .then(function (res) {
@@ -767,10 +1041,12 @@
             return new Promise((resolve, reject) => {
               const header = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("tokenlinenoti"),
-                "userid": localStorage.getItem("userid"),
+                Authorization:
+                  "Bearer " + localStorage.getItem("tokenlinenoti"),
+                userid: localStorage.getItem("userid"),
               };
-              axios.post(this.endpoint + "/notify/deletenotify",data, {
+              axios
+                .post(this.endpoint + "/notify/deletenotify", data, {
                   headers: header,
                 })
                 .then(function (res) {
@@ -781,13 +1057,14 @@
                 });
             });
           },
-          API_SendOTPLineNotify(data){
+          API_SendOTPLineNotify(data) {
             return new Promise((resolve, reject) => {
               const header = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + this.register.token,
+                Authorization: "Bearer " + this.register.token,
               };
-              axios.post(this.endpoint + "/notify/otplinenotify", data, {
+              axios
+                .post(this.endpoint + "/notify/otplinenotify", data, {
                   headers: header,
                 })
                 .then(function (res) {
@@ -798,14 +1075,15 @@
                 });
             });
           },
-          API_RegisterNotify(data){
+          API_RegisterNotify(data) {
             return new Promise((resolve, reject) => {
               const header = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + this.register.token,
-                "userid": localStorage.getItem("userid"),
+                Authorization: "Bearer " + this.register.token,
+                userid: localStorage.getItem("userid"),
               };
-              axios.post(this.endpoint + "/notify/registernotify", data, {
+              axios
+                .post(this.endpoint + "/notify/registernotify", data, {
                   headers: header,
                 })
                 .then(function (res) {

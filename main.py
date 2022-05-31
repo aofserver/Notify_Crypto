@@ -6,7 +6,7 @@
 import uvicorn
 from fastapi import FastAPI, Request, File, UploadFile, Form
 from pydantic import BaseModel
-from routers import notify
+from routers import notify, analysis
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -41,6 +41,7 @@ app.add_middleware(
 
 # router api
 app.include_router(notify.router)
+app.include_router(analysis.router)
 
 
 static_path = "static"

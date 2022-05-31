@@ -8,12 +8,7 @@ class CMD(BaseModel):
   command: str
 
 def ConnectorDB():
-  return mysql.connector.connect(
-            host="192.168.1.200",
-            user="root",
-            password="isylzjkoRoot=1",
-            database="Bitnoti"
-          )
+  return mysql.connector.connect(host="127.0.0.1",user="root",password="",database="Bitnoti")
 
 def ReadDB(columns,fetchall):
   return [{columns[index][0]:column for index, column in enumerate(value)} for value in fetchall]

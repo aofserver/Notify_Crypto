@@ -5,7 +5,6 @@ import time
 import random
 import datetime
 import hashlib
-from typing import List
 
 import requests
 from Database import SQL
